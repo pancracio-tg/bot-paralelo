@@ -1,27 +1,24 @@
-from telegram.ext import ApplicationBuilder, MessageHandler, filters, CommandHandler
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 from config import TOKEN
 from handlers import (
-    media_handler,
-    forum_handler,
-    user_handler,
     commands_handler,
-    auto_register_user_and_topic,
+    forum_handler,
+    media_handler,
+    user_handler,
 )
+from handlers.auto_register_user_and_topic import (
+    auto_register_user_and_topic,
+)  # Asegúrate de que la importación esté correcta
 
-# -------------------------
-# Crear aplicación de Telegram
-# -------------------------
 app = ApplicationBuilder().token(TOKEN).build()
 
 # -------------------------
-# Handler global de auto registro (usuarios + topics)
+# Handler global de auto-registro (usuarios + topics)
 # Se ejecuta antes que cualquier otro handler
 # group=0 asegura la prioridad
 # -------------------------
 app.add_handler(
-    MessageHandler(
-        filters.ALL, auto_register_user_and_topic.auto_register_user_and_topic
-    ),
+    MessageHandler(filters.TEXT & ~filters.COMMAND, auto_register_user_and_topic),
     group=0,
 )
 
